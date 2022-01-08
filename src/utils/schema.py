@@ -1,10 +1,15 @@
-import mysql.connector
-from mysql.connector import errorcode
-
-USER = "root"
-HOST = "localhost"
-DB_NAME = "projectDB"
-PASSWORD = "1234"
+CONSTRAINTS = {}
+CONSTRAINTS["PierLink"] = (
+    """ALTER TABLE Position_
+    ADD CONSTRAINT PierLink
+    FOREIGN KEY (PierID) REFERENCES Pier(PierID);"""
+    )
+CONSTRAINTS["Supervisor"] = (
+    """ALTER TABLE Personel
+    ADD CONSTRAINT Supervisor
+    FOREIGN KEY (SupervisorID) 
+    REFERENCES Personel(PersonelID);""" 
+    )
 
 TABLES = {}
 TABLES['Location'] = (
@@ -225,86 +230,3 @@ TABLES['Container'] = ("""
        
         """)
 
-
-def create_database(cursor):
-    try:
-        cursor.execute(
-            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
-    except mysql.connector.Error as err:
-        print("Failed creating database: {}".format(err))
-        exit(1)
-
-config = {
-        "user":USER,
-        "host":HOST,
-        "password":PASSWORD,
-        "raise_on_warnings": True
-    }
-
-try:
-    mydb = mysql.connector.connect(**config)
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Wrong username/password combination")
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        print("Database does not exist")
-    else:
-        print(err)
-else:
-    cursor = mydb.cursor()
-
-    try:
-        cursor.execute("USE {}".format(DB_NAME))
-        print("Using db {}".format(DB_NAME))
-    except mysql.connector.Error as err:
-        print("Database {} does not exist.".format(DB_NAME))
-        if err.errno == errorcode.ER_BAD_DB_ERROR:
-            create_database(cursor)
-            print("Database {} created successfully.".format(DB_NAME))
-            mydb.database = DB_NAME
-        else:
-            print(err)
-            exit(1)
-    
-    for table_name in TABLES:
-        table_description = TABLES[table_name]
-        try:
-            print("Creating table {}: ".format(table_name), end='')
-            cursor.execute(table_description)
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("already exists.")
-            else:
-                print(err.msg)
-        else:
-            print("OK")
-
-#Wtf am i supposed to do w/ this shit? 
-    p1 = """ALTER TABLE Position_
-    ADD CONSTRAINT PierLink
-    FOREIGN KEY (PierID) REFERENCES Pier(PierID);"""
-
-    p2 = """ALTER TABLE Personel
-    ADD CONSTRAINT Supervisor
-    FOREIGN KEY (SupervisorID) 
-    REFERENCES Personel(PersonelID);""" 
-
-
-    try:
-        cursor.execute(p1)
-    except mysql.connector.Error as err:
-        print(err)
- 
-    try:
-        cursor.execute(p2)
-    except mysql.connector.Error as err:
-        print(err)
-   
-    ri = "SHOW TABLES"
-    cursor.execute("{}".format(ri))
-
-    for x in cursor:
-        print(x)
-
-    cursor.close()
-    mydb.close()
