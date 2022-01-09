@@ -48,7 +48,7 @@ def use_database(cursor):
         if err.errno == errorcode.ER_BAD_DB_ERROR:
             create_database(cursor)
             print("Database {} created successfully.".format(info.DB_NAME))
-            mydb.database = info.DB_NAME
+            #mydb.database = info.DB_NAME
         else:
             print(err)
             exit(1)

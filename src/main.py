@@ -7,6 +7,7 @@ config = {
         "user":info.USER,
         "host":info.HOST,
         "password":info.PASSWORD,
+        "port" : info.PORT,
         "raise_on_warnings": True
     }
 
