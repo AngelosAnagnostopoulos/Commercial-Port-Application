@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
-from utils import dbutils, schema, info
+from utils import dbutils,info
 
 
 config = {
@@ -22,14 +22,17 @@ def main():
         else:
             print(err)
     else:
-        cursor = mydb.cursor()
-        
+        cursor = mydb.cursor(buffered=True)
+         
         dbutils.use_database(cursor)
         dbutils.database_init(cursor)    
         
         test = "SHOW TABLES"
         cursor.execute("{}".format(test))
-
+        
+        dbutils.insertions(cursor)
+        mydb.commit()
+        
         for x in cursor:
             print(x)
 

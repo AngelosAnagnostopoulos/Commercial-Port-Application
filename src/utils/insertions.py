@@ -1,10 +1,5 @@
-
-USER = "root"
-HOST = "localhost"
-DB_NAME = "projectDB"
-PASSWORD = "1234"
-
 insert_sql = []
+
 loc = "INSERT INTO Location VALUES('Greece', 0.0,0.0,'Piraeus',20.34,1);"
 weath = "INSERT INTO WeatherInfo VALUES(10.5,0,1,3.0,1 );"
 pers = """

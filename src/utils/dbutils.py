@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import errorcode
-from . import info,schema
+from . import info,schema,insertions
+
 
 def database_init(cursor):
         #Create tables and add foreign key constraints. 
@@ -39,6 +40,7 @@ def create_database(cursor):
         print("Failed creating database: {}".format(err))
         exit(1)
 
+
 def use_database(cursor):
     try:
         cursor.execute("USE {}".format(info.DB_NAME))
@@ -54,3 +56,6 @@ def use_database(cursor):
             exit(1)
 
 
+def insertions(cursor):
+    for i in range(len(insertions.insert_sql)):
+        cursor.execute(insertions.insert_sql[i], multi=True)

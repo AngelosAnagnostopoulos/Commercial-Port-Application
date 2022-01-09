@@ -63,19 +63,27 @@ INSERT INTO Other VALUES('5'),('4');
 INSERT INTO Commercial VALUES('6'),('7'),('8'),('9');
 
 
-INSERT INTO Transaction_ VALUES (1,DATE '2000-02-02',FALSE);
-INSERT INTO Completes VALUES (2,1);
-INSERT INTO Shipment VALUES ('Sugar', 1);
-INSERT INTO Regarding VALUES (1,2.5,200,1,1);
+INSERT INTO Transaction_ VALUES 
+(1,DATE '2000-02-02',FALSE),
+(2,DATE '2001-01-01',TRUE),
+(3,DATE '2022-02-10', TRUE); /*TransID, TransDate,HasContainer*/
 
-INSERT INTO Transaction_ VALUES (2,DATE '2001-01-01',TRUE); /*TransID, TransDate,HasContainer*/
-INSERT INTO Completes VALUES (4,2);  /*ShipID, TransID*/
-INSERT INTO Container VALUES (1); /*ContainerID*/
-INSERT INTO Shipment VALUES ('Silk', 2); /*ProductName,ShipmentID*/
-INSERT INTO Regarding VALUES (1,2.5,200,2,2); /*Vol,Kg,Amount,ShipmentID,TransID*/
+INSERT INTO Completes VALUES 
+(4,2),
+(2,1),
+(5,3);  /*ShipID, TransID*/
 
-INSERT INTO Transaction_ VALUES (3,DATE '2022-02-10', TRUE);
-INSERT INTO Completes VALUES (5,3);
-INSERT INTO Container VALUES (2);
-INSERT INTO Shipment VALUES ('Coal',3);
-INSERT INTO Regarding VALUES (100,1.5,1,3,3);
+INSERT INTO Container VALUES 
+(1),
+(2); /*ContainerID*/
+
+INSERT INTO Shipment VALUES 
+('Sugar', 1),
+('Silk', 2),
+('Coal',3); /*ProductName,ShipmentID*/
+
+INSERT INTO Regarding VALUES 
+(1,2.5,200,1,1),
+(1,2.5,200,2,2),
+(100,1.5,1,3,3); /*Vol,Kg,Amount,ShipmentID,TransID*/
+
