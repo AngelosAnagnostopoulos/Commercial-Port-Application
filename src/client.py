@@ -33,7 +33,7 @@ class ShipsInView(tk.Frame):
         self.ship_view_table = ttk.Treeview(self, columns=ShipsInView.COLUMNS)
 
         self.ship_view_table.heading("#0", text="")
-        
+    
         # fix ghost col
         self.ship_view_table.column("#0", width=1, stretch=False)
 

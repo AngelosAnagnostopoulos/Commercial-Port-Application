@@ -1,72 +1,3 @@
-import mysql.connector
-from mysql.connector import errorcode
-from . import info,schema
-
-
-def database_init(cursor):
-        #Create tables and add foreign key constraints. 
-        for table_name in schema.TABLES:
-            table_description = schema.TABLES[table_name]
-            try:
-                print("Creating table {}: ".format(table_name), end='')
-                cursor.execute(table_description)
-            except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                    print("already exists.")
-                else:
-                    print(err.msg)
-                    exit(1)
-            else:
-                print("OK")
-
-        for constraint in schema.CONSTRAINTS:
-            const_description = schema.CONSTRAINTS[constraint]
-            try:
-                print("Adding constraint {}: ".format(constraint), end='')
-                cursor.execute(const_description)
-            except mysql.connector.Error as err:
-                if err.errno == 1005:
-                    print("Constraint already satisfied")
-                else:
-                    print(err)
-                    exit(1)
-     
-
-def create_database(cursor):
-    try:
-        cursor.execute(
-            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(info.DB_NAME))
-    except mysql.connector.Error as err:
-        print("Failed creating database: {}".format(err))
-        exit(1)
-
-
-def use_database(database, cursor):
-    try:
-        cursor.execute("USE {}".format(info.DB_NAME))
-        print("Using db {}".format(info.DB_NAME))
-    except mysql.connector.Error as err:
-        print("Database {} does not exist.".format(info.DB_NAME))
-        if err.errno == errorcode.ER_BAD_DB_ERROR:
-            create_database(cursor)
-            print("Database {} created successfully.".format(info.DB_NAME))
-            #mydb.database = info.DB_NAME
-        else:
-            print(err)
-            exit(1)
-
-
-def insertions(cursor):
-    for i in range(len(insert_sql)):
-        try:
-            cursor.execute(insert_sql[i], multi=True)
-        except mysql.connector.Error as err:
-            if err.errno == 1062:
-                print("Already added values.")
-            else:
-                print(err)
-                exit(1)
-
 insert_sql = []
 
 loc = "INSERT INTO Location VALUES('Greece', 0.0,0.0,'Piraeus',20.34,1);"
@@ -170,42 +101,25 @@ regarding = """
 (1,2.5,200,2,2),
 (100,1.5,1,3,3);"""
 
-insert_sql.append(loc)
-insert_sql.append(weath)
-insert_sql.append(pers)
-insert_sql.append(pier)
-insert_sql.append(pos)
-insert_sql.append(ship)
-insert_sql.append(arr)
-insert_sql.append(dept)
+
+insert_sql.append(regarding)
+insert_sql.append(shipment)
+insert_sql.append(container)
+insert_sql.append(completes)
+insert_sql.append(trans)
+insert_sql.append(tank)
+insert_sql.append(cont)
+insert_sql.append(other)
+insert_sql.append(comm)
 insert_sql.append(shift)
 insert_sql.append(starts)
-insert_sql.append(comm)
-insert_sql.append(other)
-insert_sql.append(cont)
-insert_sql.append(tank)
-insert_sql.append(trans)
-insert_sql.append(completes)
-insert_sql.append(container)
-insert_sql.append(shipment)
-insert_sql.append(regarding)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+insert_sql.append(dept)
+insert_sql.append(arr)
+insert_sql.append(ship)
+insert_sql.append(pos)
+insert_sql.append(pier)
+insert_sql.append(pers)
+insert_sql.append(weath)
+insert_sql.append(loc)
 
 
