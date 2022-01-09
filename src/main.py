@@ -23,19 +23,21 @@ def main():
             print(err)
     else:
         cursor = mydb.cursor(buffered=True)
-         
-        dbutils.use_database(cursor)
-        dbutils.database_init(cursor)    
+
+        #cursor.execute("DROP DATABASE projectDB")
         
-        test = "SHOW TABLES"
-        cursor.execute("{}".format(test))
+        dbutils.use_database(mydb, cursor)
+        dbutils.database_init(cursor)    
         
         dbutils.insertions(cursor)
         mydb.commit()
         
+        test = "SHOW TABLES"
+        cursor.execute("{}".format(test))
+
         for x in cursor:
             print(x)
-
+        
         cursor.close()
         mydb.close() 
 
