@@ -29,13 +29,13 @@ def database_init(cursor):
                     print("Constraint already satisfied")
                 else:
                     print(err)
-                    exit(1)
+                    # exit(1)
      
 
 def create_database(cursor):
     try:
         cursor.execute(
-            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(info.DB_NAME))
+            "CREATE DATABASE {} DEFAULT CHARACTER SET 'UTF8MB4'".format(info.DB_NAME))
     except mysql.connector.Error as err:
         print("Failed creating database: {}".format(err))
         exit(1)
@@ -50,16 +50,19 @@ def use_database(database, cursor):
         if err.errno == errorcode.ER_BAD_DB_ERROR:
             create_database(cursor)
             print("Database {} created successfully.".format(info.DB_NAME))
-            #mydb.database = info.DB_NAME
+            database.database = info.DB_NAME
         else:
             print(err)
             exit(1)
 
 
-def insertions(cursor):
+def insertions(conn, cursor):
+    print("inserting")
     for i in range(len(insert_sql)):
+        print(insert_sql[i])
         try:
-            cursor.execute(insert_sql[i], multi=True)
+            cursor.execute(insert_sql[i])
+            conn.commit()
         except mysql.connector.Error as err:
             if err.errno == 1062:
                 print("Already added values.")

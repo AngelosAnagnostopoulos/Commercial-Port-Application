@@ -1,12 +1,8 @@
-import mysql.connector
-from mysql.connector import errorcode
-from utils import dbutils, schema, info
+from database_connector import DatabaseConnector
+from utils import info
 
 import tkinter as tk
 from tkinter import ttk
-
-import asyncio
-
 
 config = {
         "user":info.USER,
@@ -18,8 +14,14 @@ config = {
     }
 
 
+connector = DatabaseConnector(config)
+connector.start_executor()
+
+
 class ShipsInView(tk.Frame):
 
+    QUERY = "SELECT ShipID, S_Name, PierID, PosID FROM Ship NATURAL JOIN Position_ NATURAL JOIN Pier WHERE PosID IS NOT NULL ORDER BY ShipID;"
+    
     COLUMNS = ("Ship ID", "Ship Name", "Pier", "Position")
 
     DUMMY_DATA = (
@@ -29,6 +31,9 @@ class ShipsInView(tk.Frame):
 
     def __init__(self, master):
         super().__init__(master)
+
+        self.refresh_button = tk.Button(self, text = "Refresh", command=self.run_update)
+        self.refresh_button.pack(fill=tk.X)
 
         self.ship_view_table = ttk.Treeview(self, columns=ShipsInView.COLUMNS)
 
@@ -42,19 +47,25 @@ class ShipsInView(tk.Frame):
             self.ship_view_table.column(column, width=1, anchor=tk.CENTER)
 
         for entry in ShipsInView.DUMMY_DATA:
-            self.ship_view_table.insert(parent='', index=tk.END, iid=entry[0], values=entry)
+            self.ship_view_table.insert(parent='', index=tk.END, iid=str(entry[0]), values=entry)
 
         self.ship_view_table.pack(fill=tk.BOTH, expand=True, padx=10)
-        
-    def update(self):
 
+    def __insert_data_to_treeview(self, data):
+        self.ship_view_table.insert(parent='', index=tk.END, iid=str(data[0]), values=data)
+
+
+    def run_update(self):
         # delete all items in view
-        for item in self.ship_view_table:
+        
+        for item in self.ship_view_table.get_children():
             self.ship_view_table.delete(item)
 
-        # fetch data
-
+        connector.query_database(ShipsInView.QUERY, self.__insert_data_to_treeview)
         
+
+
+
 
 class App:
 
@@ -73,8 +84,15 @@ class App:
         self.tab_controller.add(self.employees, text='Employees')
 
         self.tab_controller.pack(fill=tk.BOTH, expand=True)
+        
+        
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+        
         self.root.mainloop()
 
+    def on_close(self):
+        connector.close_connector()
+        self.root.destroy()
 
 if __name__ == "__main__":
     App()

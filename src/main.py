@@ -25,12 +25,14 @@ def main():
     else:
         cursor = mydb.cursor(buffered=True)
 
-        #cursor.execute("DROP DATABASE projectDB")
+        cursor.execute("DROP DATABASE projectDB")
         
         dbutils.use_database(mydb, cursor)
         dbutils.database_init(cursor)    
         
-        dbutils.insertions(cursor)
+        mydb.commit()
+
+        dbutils.insertions(mydb, cursor)
         mydb.commit()
         
         test = "SHOW TABLES"
