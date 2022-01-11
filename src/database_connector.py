@@ -13,7 +13,6 @@ class DatabaseConnector:
     def start_executor(self):
         self.executor_thread.start()
 
-
     def __executor(self):
         self.conn  = mysql.connector.connect(**self.config)
         self.cursor = self.conn.cursor(buffered=True)

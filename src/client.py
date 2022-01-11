@@ -17,6 +17,8 @@ config = {
 connector = DatabaseConnector(config)
 connector.start_executor()
 
+def default_error_popup():
+    tk.messagebox.showerror(title="Error", message="SQL Error!")
 
 class ShipsInView(tk.Frame):
 
@@ -64,7 +66,75 @@ class ShipsInView(tk.Frame):
         connector.query_database(ShipsInView.QUERY, self.__insert_data_to_treeview)
         
 
+class GridLabeledField:
 
+    def __init__(self, master, field_name, row, column, vertical=False):
+       self.__label = tk.Label(master, text=field_name)
+       self.__data = tk.Label(master, text="placeholder")
+
+       self.__label.grid(row=row, column=column, sticky=tk.W)
+       
+       data_row, data_col = row, column + 1
+       if vertical:
+           data_row, data_col = row + 1, column
+
+       self.__data.grid(row=data_row, column=data_col, sticky=tk.W, padx=10)
+
+    def update_data(self, data):
+        self.__data.config(text=data)
+
+class ShipView(tk.Frame):
+    
+    COLUMNS = (
+            ("Ship Name", "S_Name"),
+            ("Ship ID"  , "ShipID"),
+            ("Flag"     , "Flag"  ),
+            ("Coonstructuion Year", "Constructed"),
+            ("Ship Length"        , "Length_"),
+            ("GT", "GT"),
+            ("DWT", "DWT"),
+            ("Previous Port", "PrevPort")
+        )
+
+    FIELDS = ", ".join(map(lambda x : x[1], COLUMNS))
+
+    QUERY = f"SELECT {FIELDS} FROM Ship WHERE ShipID = {{}}"
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=3)
+        
+        self.title_label = tk.Label(self, text="Ship Details")
+        self.title_label.grid(row=0, column=0, columnspan=2, pady=20)
+    
+        self.data_display_labels = [GridLabeledField(self, field_data[0], row=place_row, column=0) for place_row, field_data in enumerate(ShipView.COLUMNS, start=1)]
+        
+        self.refresh_button = tk.Button(self, text="Referesh", command=self.fetch_ship_data)
+        self.refresh_button.grid(row=len(ShipView.COLUMNS) + 2, column=0, columnspan=2)
+
+        self.current_ship_id = 5
+
+    def display_ship_data(self, shipid):
+        self.current_ship_id = shipid
+        self.fetch_ship_data()
+
+    def __display_data(self, data):
+        for grid_field, data_chunk in zip(self.data_display_labels, data):
+            grid_field.update_data(data_chunk)
+
+    def fetch_ship_data(self):
+        
+        if self.current_ship_id:
+            query = ShipView.QUERY.format(self.current_ship_id)
+            connector.query_database(query, self.__display_data, onerror=default_error_popup)
+
+
+class EmployeeView(tk.Frame):
+
+    def __init__(self, master):
+        super().__init__(master)
 
 
 class App:
@@ -80,8 +150,11 @@ class App:
         self.employees = tk.Frame(self.root)
         self.employees.config(bg='red')
 
+        self.ship_view = ShipView(self.root)
+
         self.tab_controller.add(self.ships_in_frame, text='Ships')
         self.tab_controller.add(self.employees, text='Employees')
+        self.tab_controller.add(self.ship_view, text='Ship View')
 
         self.tab_controller.pack(fill=tk.BOTH, expand=True)
         
