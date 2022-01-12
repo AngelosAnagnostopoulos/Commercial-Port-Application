@@ -1,4 +1,4 @@
-INSERT INTO Location VALUES('Greece', 0.0,0.0,'Piraeus',20.34,1);
+INSERT INTO Location VALUES(1,'Greece', 0.0,0.0,'Piraeus',20.34);
 INSERT INTO WeatherInfo VALUES(10.5,0,1,3.0,1 );
 
 INSERT INTO Personel VALUES
@@ -14,37 +14,37 @@ INSERT INTO Pier VALUES
     ('2','5','1');
     
 INSERT INTO Position_ VALUES
-(30.0,1,1,1),
-(20.0,1,2,1),
-(10.0,0,3,1),
-(50.0,0,4,1),
-(300.0,1,5,1),
-(200.0,1,6,2),
-(100.0,0,7,2),
-(500.0,0,8,2),
-(500.0,1,9,2),
-(500.0,1,10,2);
+(1,30.0,1,1),
+(2,20.0,1,1),
+(3,10.0,0,1),
+(4,50.0,0,1),
+(5,300.0,1,1),
+(6,200.0,1,2),
+(7,100.0,0,2),
+(8,500.0,0,2),
+(9,500.0,1,2),
+(10,500.0,1,2);
 
 INSERT INTO Ship VALUES
-('Delhi, India', 48.0, DATE '2014-02-03','India','DurgaSS',133,1,10,100,NULL),
-('Piraeus, Greece', NULL, DATE '2000-01-01','Greek','Noor1',50,2,3,30,1),
-('Moscow, Russia', NULL, DATE '2014-02-03','Pakistan','ScamSS',420,3,30,200,2),
-('Okinawa, Japan', 1000, DATE '1942-08-27','American','U.S.S. William D. Porter',115,4,40,100,NULL ),
-('Delhi, India', 48.0, DATE '2014-02-03','India','NesoSS',133,5,10,100,NULL ),
-('Delhi, India', NULL, DATE '1965-02-06','Greek','Noor2ElectricBoogaloo',25,6,300,30,6),
-('Moscow, Russia', NULL, DATE '2014-02-03','Armenian','Tenkian',15,7,30,200,9 ),
-('Piraeus, Greece', 24, DATE '1963-02-21','American','U.S.S Phill McCracken',140,8,40,100,NULL ),
-('Piraeus, Greece', 24, DATE '1962-04-25','American','S.S. Naomi',100,9,50,90,NULL ),
-('Tokyo, Japan', NULL, DATE '2014-04-11','Japanesse','Nakatomi Plaza',89,10,40,100,10 ),
-('Tokyo, Japan', NULL, DATE '2000-02-24','Armenian','The lady of the oceans',86,11,40,100,5 ),
-('Tokyo, Japan', 24, DATE '1963-02-21','Armenian','SuperAFM',62,12,40,100,NULL ),
-('Piraeus, Greece', 24, DATE '1963-02-21','American','S.S. DistroTube',123,13,40,100,NULL ),
-('Piraeus, Greece', 24, DATE '1963-02-21','American','S.S. Thryalidis',1521,14,40,100,NULL );
+(1,'Delhi, India', 48.0, DATE '2014-02-03','India','DurgaSS',133,10,100,NULL),
+(2,'Piraeus, Greece', NULL, DATE '2000-01-01','Greek','Noor1',50,3,30,1),
+(3,'Moscow, Russia', NULL, DATE '2014-02-03','Pakistan','ScamSS',420,30,200,2),
+(4,'Okinawa, Japan', 1000, DATE '1942-08-27','American','U.S.S. William D. Porter',115,40,100,NULL ),
+(5,'Delhi, India', 48.0, DATE '2014-02-03','India','NesoSS',133,10,100,NULL ),
+(6,'Delhi, India', NULL, DATE '1965-02-06','Greek','Noor2ElectricBoogaloo',25,300,30,6),
+(7,'Moscow, Russia', NULL, DATE '2014-02-03','Armenian','Tenkian',15,30,200,9 ),
+(8,'Piraeus, Greece', 24, DATE '1963-02-21','American','U.S.S Phill McCracken',140,40,100,NULL ),
+(9,'Piraeus, Greece', 24, DATE '1962-04-25','American','S.S. Naomi',100,50,90,NULL ),
+(10,'Tokyo, Japan', NULL, DATE '2014-04-11','Japanesse','Nakatomi Plaza',89,40,100,10 ),
+(11,'Tokyo, Japan', NULL, DATE '2000-02-24','Armenian','The lady of the oceans',86,40,100,5 ),
+(12,'Tokyo, Japan', 24, DATE '1963-02-21','Armenian','SuperAFM',62,40,100,NULL ),
+(13,'Piraeus, Greece', 24, DATE '1963-02-21','American','S.S. DistroTube',12,40,100,NULL ),
+(14,'Piraeus, Greece', 24, DATE '1963-02-21','American','S.S. Thryalidis',1521,40,100,NULL );
 
 INSERT INTO Shift VALUES
-	(DATE '2022-02-10', DATE '2022-02-11', 1,1,1),
-	(DATE '2022-02-10', DATE '2022-02-11', 2,1,2),
-	(DATE '2022-02-10', DATE '2022-02-11', 3,2,10);
+	(1,DATE '2022-02-10', DATE '2022-02-11', 1,1),
+	(2,DATE '2022-02-10', DATE '2022-02-11', 1,2),
+	(3,DATE '2022-02-10', DATE '2022-02-11', 2,10);
 
 INSERT INTO Starts_ VALUES 
 	(1,1),
@@ -78,12 +78,12 @@ INSERT INTO Container VALUES
 (2); /*ContainerID*/
 
 INSERT INTO Shipment VALUES 
-('Sugar', 1),
-('Silk', 2),
-('Coal',3); /*ProductName,ShipmentID*/
+(1,'Sugar'),
+(2,'Silk'),
+(3,'Coal'); 
 
 INSERT INTO Regarding VALUES 
-(1,2.5,200,1,1),
-(1,2.5,200,2,2),
-(100,1.5,1,3,3); /*Vol,Kg,Amount,ShipmentID,TransID*/
+(1,1,1,2.5,200),
+(2,2,1,2.5,200),
+(3,3,100,1.5,1); /*ShipmentID,TransID,Vol,Kg,Amount*/
 
