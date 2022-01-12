@@ -1,4 +1,4 @@
-INSERT INTO Location VALUES(1,'Greece', 0.0,0.0,'Piraeus',20.34);
+INSERT INTO Location VALUES(1,'Greece',0,0,'Piraeus',CURTIME());
 INSERT INTO WeatherInfo VALUES(10.5,0,1,3.0,1 );
 
 INSERT INTO Personel VALUES

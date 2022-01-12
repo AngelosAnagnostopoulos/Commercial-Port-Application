@@ -15,12 +15,12 @@ TABLES = {}
 TABLES['Location'] = (
     """CREATE TABLE Location
 (
+  LocID INT NOT NULL AUTO_INCREMENT,
   Country VARCHAR(255) ,
   Lattitude FLOAT ,
   Longtitude FLOAT ,
   City VARCHAR(255) ,
   LocTime FLOAT ,
-  LocID INT ,
   PRIMARY KEY (LocID)
 );
         """)
@@ -37,9 +37,9 @@ TABLES['WeatherInfo'] = (
         """)
 TABLES['Position'] = ("""CREATE TABLE Position_
 (
+  PosID INT NOT NULL AUTO_INCREMENT,
   MaxSize FLOAT ,
   Taken INT ,
-  PosID INT ,
   PierID INT,
   PRIMARY KEY (PosID)
 );
@@ -47,13 +47,13 @@ TABLES['Position'] = ("""CREATE TABLE Position_
 TABLES['Ship'] = ("""
         CREATE TABLE Ship
 (
+  ShipID INT NOT NULL AUTO_INCREMENT,
   PrevPort VARCHAR(255) ,
   EstimatedArrivalTime FLOAT,
   Constructed DATE ,
   Flag VARCHAR(255) ,
   S_Name VARCHAR(255) ,
   Length_ FLOAT ,
-  ShipID INT ,
   GT INT ,
   DWT INT ,
   PosID INT,
@@ -64,15 +64,15 @@ TABLES['Ship'] = ("""
 TABLES['Shipment'] = ("""
 CREATE TABLE Shipment 
 (
+  ShipmentID INT NOT NULL AUTO_INCREMENT,
   Product VARCHAR(255) ,
-  ShipmentID INT ,
   PRIMARY KEY (ShipmentID)
 );
         """)
 TABLES['Pier'] = ("""
 CREATE TABLE Pier
 (
-  PierID INT ,
+  PierID INT NOT NULL AUTO_INCREMENT,
   TotalPositions INT ,
   LocID INT ,
   PRIMARY KEY (PierID),
@@ -84,9 +84,9 @@ CREATE TABLE Pier
 TABLES['Shift'] = ("""
 CREATE TABLE Shift 
 (
+  ShiftID INT NOT NULL AUTO_INCREMENT,
   StartsAt DATE ,
   Finishes DATE ,
-  ShiftID INT ,
   PierID INT ,
   ShipID INT ,
   PRIMARY KEY (ShiftID),
@@ -98,7 +98,7 @@ CREATE TABLE Shift
 TABLES['Personel'] = ("""
 CREATE TABLE Personel 
 (
-  PersonelID INT ,
+  PersonelID INT NOT NULL AUTO_INCREMENT,
   Salary INT ,
   F_Name VARCHAR(255) ,
   L_Name VARCHAR(255) ,
@@ -148,7 +148,7 @@ CREATE TABLE Other
 TABLES['Transaction'] = ("""
 CREATE TABLE Transaction_
 (
-  TransactionID INT,
+  TransactionID INT NOT NULL AUTO_INCREMENT,
   TransactionDate DATE,
   HasContainer INT,
   PRIMARY KEY (TransactionID)
@@ -179,11 +179,11 @@ CREATE TABLE Completes
 TABLES['Regarding'] = ("""
 CREATE TABLE Regarding
 (
+  ShipmentID INT ,
+  TransactionID INT ,
   Volume FLOAT ,
   Weight FLOAT ,
   Amount FLOAT ,
-  ShipmentID INT ,
-  TransactionID INT ,
   PRIMARY KEY (ShipmentID, TransactionID),
   FOREIGN KEY (ShipmentID) REFERENCES Shipment(ShipmentID)  ,
   FOREIGN KEY (TransactionID) REFERENCES Transaction_(TransactionID) 
@@ -193,14 +193,14 @@ CREATE TABLE Regarding
 TABLES['Arival'] = ("""
 CREATE TABLE Arival
 (
-  ArivalID INT ,
-  ArivalDate DATE ,
-  EstimatedDeparture DATE ,
+  ArrivalID INT NOT NULL AUTO_INCREMENT,
+  ArrivalDate DATE ,
+  EstimatedDeparture DATE DEFAULT NULL ,
   Completed BOOLEAN ,
   Delay DATE,
   ShipID INT ,
   PosID INT ,
-  PRIMARY KEY (ArivalID),
+  PRIMARY KEY (ArrivalID) ,
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID) ,
   FOREIGN KEY (PosID) REFERENCES Position_(PosID) 
 );
@@ -209,7 +209,7 @@ CREATE TABLE Arival
 TABLES['Departure'] = ("""
 CREATE TABLE Departure
 (
-  DepartureID INT ,
+  DepartureID INT NOT NULL AUTO_INCREMENT,
   DepartureDate DATE ,
   Completed BOOLEAN ,
   Delay DATE,
@@ -222,10 +222,10 @@ CREATE TABLE Departure
 
         """)
 TABLES['Container'] = ("""
- CREATE TABLE Container
+CREATE TABLE Container
 (
-  Container INT NOT NULL,
-  FOREIGN KEY (Container) REFERENCES Transaction_(TransactionID)
+  ContainerID INT NOT NULL AUTO_INCREMENT,
+  FOREIGN KEY (ContainerID) REFERENCES Transaction_(TransactionID) 
 );
        
         """)
