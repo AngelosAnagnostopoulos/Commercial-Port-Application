@@ -12,3 +12,10 @@ SELECT S_Name,Flag FROM Ship NATURAL JOIN Completes NATURAL JOIN Transaction_ NA
        DATE ('1931-01-01') AND DATE_SUB(NOW(), INTERVAL 1 DAY);
        
 SELECT F_name,L_name FROM Personel NATURAL JOIN Starts_ NATURAL JOIN Shift WHERE StartsAt BETWEEN NOW() AND DATE ('2023-02-10');
+
+/*Query Ideas:
+Find ships in port for given year(s)
+Find total ammount of cargo recieved (by type) in a month
+Find total ammount of transactions completed in a month
+Find average positions occupied in a month(?)
+ */

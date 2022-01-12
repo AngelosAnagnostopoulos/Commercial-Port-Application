@@ -1,6 +1,6 @@
 /*CREATE DATABASE limanidb;*/
 /*DROP DATABASE limanidb;*/
-
+/*
 DROP TABLE WeatherInfo;
 DROP TABLE Starts_;
 DROP TABLE Shift;
@@ -20,11 +20,11 @@ DROP TABLE Shipment;
 DROP TABLE Personel;
 DROP TABLE Container;
 DROP TABLE Transaction_;
-
+*/
 
 CREATE TABLE Location
 (
-  LocID INT ,
+  LocID INT NOT NULL AUTO_INCREMENT,
   Country VARCHAR(255) ,
   Lattitude FLOAT ,
   Longtitude FLOAT ,
@@ -45,7 +45,7 @@ CREATE TABLE WeatherInfo
 
 CREATE TABLE Position_
 (
-  PosID INT ,
+  PosID INT NOT NULL AUTO_INCREMENT,
   MaxSize FLOAT ,
   Taken INT ,
   PierID INT,
@@ -54,7 +54,7 @@ CREATE TABLE Position_
 
 CREATE TABLE Ship
 (
-  ShipID INT ,
+  ShipID INT NOT NULL AUTO_INCREMENT,
   PrevPort VARCHAR(255) ,
   EstimatedArrivalTime FLOAT,
   Constructed DATE ,
@@ -70,14 +70,14 @@ CREATE TABLE Ship
 
 CREATE TABLE Shipment 
 (
-  ShipmentID INT ,
+  ShipmentID INT NOT NULL AUTO_INCREMENT,
   Product VARCHAR(255) ,
   PRIMARY KEY (ShipmentID)
 );
 
 CREATE TABLE Pier
 (
-  PierID INT ,
+  PierID INT NOT NULL AUTO_INCREMENT,
   TotalPositions INT ,
   LocID INT ,
   PRIMARY KEY (PierID),
@@ -91,7 +91,7 @@ FOREIGN KEY (PierID) REFERENCES Pier(PierID);
 
 CREATE TABLE Shift 
 (
-  ShiftID INT ,
+  ShiftID INT NOT NULL AUTO_INCREMENT,
   StartsAt DATE ,
   Finishes DATE ,
   PierID INT ,
@@ -104,7 +104,7 @@ CREATE TABLE Shift
 
 CREATE TABLE Personel 
 (
-  PersonelID INT ,
+  PersonelID INT NOT NULL AUTO_INCREMENT,
   Salary INT ,
   F_Name VARCHAR(255) ,
   L_Name VARCHAR(255) ,
@@ -120,32 +120,32 @@ REFERENCES Personel(PersonelID) ;
 
 CREATE TABLE ContainerShip
 (
-  ShipID INT ,
+  ShipID INT NOT NULL ,
   PRIMARY KEY (ShipID),
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID) 
 );
 CREATE TABLE Tanker
 (
-  TankID INT,
+  TankID INT NOT NULL ,
   PRIMARY KEY (TankID),
   FOREIGN KEY (TankID) REFERENCES Ship(ShipID)
 );
 CREATE TABLE Commercial
 (
-  ShipID INT ,
+  ShipID INT NOT NULL ,
   PRIMARY KEY (ShipID),
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID) 
 );
 CREATE TABLE Other
 (
-  ShipID INT ,
+  ShipID INT NOT NULL ,
   PRIMARY KEY (ShipID),
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID) 
 );
 
 CREATE TABLE Transaction_
 (
-  TransactionID INT ,
+  TransactionID INT NOT NULL AUTO_INCREMENT,
   TransactionDate DATE ,
   HasContainer BOOLEAN ,
   PRIMARY KEY (TransactionID)
@@ -183,21 +183,21 @@ CREATE TABLE Regarding
 
 CREATE TABLE Arival
 (
-  ArivalID INT ,
-  ArivalDate DATE ,
-  EstimatedDeparture DATE ,
+  ArrivalID INT NOT NULL AUTO_INCREMENT,
+  ArrivalDate DATE ,
+  EstimatedDeparture DATE DEFAULT NULL ,
   Completed BOOLEAN ,
   Delay DATE,
   ShipID INT ,
   PosID INT ,
-  PRIMARY KEY (ArivalID),
+  PRIMARY KEY (ArrivalID) ,
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID) ,
   FOREIGN KEY (PosID) REFERENCES Position_(PosID) 
 );
 
 CREATE TABLE Departure
 (
-  DepartureID INT ,
+  DepartureID INT NOT NULL AUTO_INCREMENT,
   DepartureDate DATE ,
   Completed BOOLEAN ,
   Delay DATE,
@@ -210,7 +210,7 @@ CREATE TABLE Departure
 
 CREATE TABLE Container
 (
-  ContainerID INT ,
+  ContainerID INT NOT NULL AUTO_INCREMENT,
   FOREIGN KEY (ContainerID) REFERENCES Transaction_(TransactionID) 
 );
 
