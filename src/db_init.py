@@ -45,7 +45,9 @@ def main():
         
         mydb.commit()
 
-        dbutils.insertions(mydb, cursor)
+        #dbutils.insertions(mydb, cursor)
+        dbutils.execute_sql_file(mydb, cursor, "sqlStuff/insertions.sql")
+        dbutils.execute_sql_file(mydb, cursor, "sqlStuff/views.sql")
         mydb.commit()
         
         test = "SHOW TABLES"

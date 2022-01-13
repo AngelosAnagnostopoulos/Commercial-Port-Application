@@ -21,26 +21,32 @@ FROM
 WHERE
     Ship.ShipID = Completes.ShipID AND Completes.TransactionID = Transaction_.TransactionID AND Shipment.ShipmentID = Regarding.ShipmentID AND Transaction_.TransactionID = Regarding.TransactionID;
 
-CREATE VIEW ShipsInPort AS
+CREATE VIEW AllShipsView AS
 SELECT
+    ShipID,
     S_Name,
     Flag,
     PosID
-FROM Ship
-WHERE Ship.PosID IS NOT NUlL;
+FROM Ship;
+
+CREATE VIEW ShipsInPort AS
+SELECT * FROM AllShipsView
+WHERE PosID IS NOT NULL;
 
 CREATE VIEW ArrivingSoon AS
 SELECT
+    Ship.ShipID
     S_Name,
     Flag,
-    ArivalDate
+    ArrivalDate
 FROM 
     Ship,Arival
 WHERE 
-    Arrival.ShipID = Ship.ShipID AND ArrivalDate BETWEEN NOW() AND (NOW() + INTERVAL 7 DAY);
+    Arival.ShipID = Ship.ShipID AND ArrivalDate BETWEEN NOW() AND (NOW() + INTERVAL 7 DAY);
 
 CREATE VIEW DepartingSoon AS
 SELECT
+    Ship.ShipID,
     S_Name,
     Flag,
     DepartureDate

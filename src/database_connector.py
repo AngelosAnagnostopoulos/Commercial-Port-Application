@@ -2,11 +2,23 @@ import asyncio
 import threading
 import mysql.connector
 
+def escape_string(string):
+    ESCAPED_CHARS = """%'"_\\"""
+    str_buffer = list(string)
+
+    for esc in ESCAPED_CHARS:
+        for i, e in enumerate(str_buffer):
+            if e == esc:
+                str_buffer[i] = "\\" + e
+    
+    return ''.join(str_buffer)
+
 
 class DatabaseConnector:
 
-    def __init__(self, config):
+    def __init__(self, config, default_error_handler=None):
         self.config = config
+        self.deafult_error_handler = default_error_handler
         self.loop = asyncio.new_event_loop()
         self.executor_thread = threading.Thread(target=self.__executor)
 
@@ -22,6 +34,9 @@ class DatabaseConnector:
         self.loop.close()
     
     def query_database(self, query, dispatcher=None, onerror=None):
+        if onerror is None:
+            onerror = self.deafult_error_handler
+        
         asyncio.run_coroutine_threadsafe(self.__inner_query_database(query, dispatcher, onerror), self.loop)
 
     async def __inner_query_database(self, query, dispatcher, onerror):

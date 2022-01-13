@@ -56,13 +56,36 @@ def use_database(database, cursor):
             exit(1)
 
 
+def execute_sql_file(conn, cursor, filepath):
+
+    with open(filepath, 'r', encoding='utf-8') as insertions:
+        # Potential for injection here, should be fine as long as an end user doesnt have access
+        sql_commands = insertions.read().split(';')
+        
+        for command in sql_commands:
+            try:
+                cursor.execute(command)
+                conn.commit()
+            except mysql.connector.Error as err:
+                if err.errno == 1062:
+                    print("1062")
+                elif err.errno == 1065:
+                    print("Empty query.")
+                else:
+                    print(err)
+                    exit(1)
+
 def insertions(conn, cursor):
     #Read directly from .sql file and insert data into base. 
     import os
-    cur_path = os.path.dirname(__file__)
-    path = os.path.relpath("other/sqlStuff/insertions.sql",cur_path)
+    # cur_path = os.path.dirname(__file__)
+    # print(cur_path)
+    # print(os.getcwd())
+    path = os.path.relpath("sqlStuff/insertions.sql")
+    path = os.path.normpath(path)
+    #print(path)
     print("Opening insertions file...")
-    with open(path, 'r') as insertions:
+    with open(path, 'r', encoding='utf-8') as insertions:
         #Do stuff here
         sql_commands = insertions.read().split(';')
         print("Inserting data...")
