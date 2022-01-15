@@ -14,6 +14,7 @@ def escape_string(string):
     return ''.join(str_buffer)
 
 
+
 class DatabaseConnector:
 
     def __init__(self, config, default_error_handler=None):
@@ -52,7 +53,7 @@ class DatabaseConnector:
                 onerror()
 
         finally:
-            self.cursor.commit()
+            #self.cursor.commit()
             self.conn.commit()
 
     def close_connector(self):

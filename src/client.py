@@ -1,10 +1,11 @@
-from os import name
 from database_connector import DatabaseConnector, escape_string
 from utils import info
 
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+from tkcalendar import DateEntry
+import datetime
 
 config = {
         "user":info.USER,
@@ -57,8 +58,22 @@ class ShipsInView(ControllerAwareFrame):
             self.ship_view_table.heading(column, text=column)
             self.ship_view_table.column(column, width=1, anchor=tk.CENTER)
 
+        
+        self.ship_view_table.bind("<Double-1>", self.on_click)
+
         self.ship_view_table.pack(fill=tk.BOTH, expand=True, padx=10)
 
+    def on_click(self, event):
+        selected_item = self.ship_view_table.selection()
+
+        if selected_item is None or len(selected_item) != 1:
+            return
+
+        selected_item = selected_item[0]
+
+        self.controller.display_ship_data(selected_item)
+        
+    
     def __insert_data_to_treeview(self, data):
         self.ship_view_table.insert(parent='', index=tk.END, iid=str(data[0]), values=data)
 
@@ -76,7 +91,7 @@ class GridLabeledField:
 
     def __init__(self, master, field_name, row, column, vertical=False):
        self.__label = tk.Label(master, text=field_name)
-       self.__data = tk.Label(master, text="placeholder")
+       self.__data = tk.Label(master, text="")
 
        self.__label.grid(row=row, column=column, sticky=tk.W)
        
@@ -95,7 +110,7 @@ class ShipView(ControllerAwareFrame):
             "Ship Name",
             "Ship ID",
             "Flag",
-            "Coonstructuion Year",
+            "Constructuion Year",
             "Ship Length",
             "GT",
             "DWT",
@@ -131,7 +146,66 @@ class ShipView(ControllerAwareFrame):
         for grid_field, data_chunk in zip(self.data_display_labels, data):
             grid_field.update_data(data_chunk)
 
-  
+
+class AddShipView(ControllerAwareFrame):
+
+    COLUMNS = (
+        "Ship Name",
+        "Flag",
+        "Length",
+        "GT",
+        "DWT"
+    )
+
+    def __init__(self, controller, master, **cfg):
+        super().__init__(controller, master, **cfg)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=3)
+
+        tk.Label(self, text="Add Ship").grid(columnspan=2, sticky=tk.NSEW, pady=10)
+
+        self.entries = []
+
+        current_row = 1
+        for col_name in AddShipView.COLUMNS:
+            tk.Label(self, text=col_name).grid(row=current_row, sticky=tk.W, padx=10, pady=10)
+            
+            entry = tk.Entry(self)
+            entry.grid(row=current_row, column=1, sticky=tk.NSEW, padx=10, pady=10)
+
+            self.entries.append(entry)
+
+            current_row += 1
+
+        tk.Label(self, text="Construction date").grid(row=current_row, sticky=tk.W, padx=10, pady=10)
+        
+        self.date_entry = DateEntry(self)
+        self.date_entry.grid(row=current_row, column=1, sticky=tk.W, padx=10, pady=10)
+
+        current_row += 1
+
+        self.add_button = tk.Button(self, text="Add", command=self.add_ship)
+        self.add_button.grid(row=current_row, columnspan=2, sticky=tk.NSEW, padx=10, pady=10)
+
+        
+    def add_ship(self):
+        data = [e.get() for e in self.entries]
+        data.append(self.date_entry.get_date())
+    
+        self.controller.add_ship(data)
+
+
+        
+
+class MovementView(ControllerAwareFrame):
+
+
+    def __init__(self, controller, master, **cfg):
+        super().__init__(controller, master, **cfg)
+
+
+
 class EmployeeView(tk.Frame):
 
     def __init__(self, master):
@@ -152,10 +226,12 @@ class AppController:
         self.employees.config(bg='red')
 
         self.ship_view = self.new_aware_frame(ShipView)
+        self.add_ship_view = self.new_aware_frame(AddShipView)
 
         self.tab_controller.add(self.ships_in_frame, text='Ships')
         self.tab_controller.add(self.employees, text='Employees')
         self.tab_controller.add(self.ship_view, text='Ship View')
+        self.tab_controller.add(self.add_ship_view, text="Add Ship")
 
         self.tab_controller.pack(fill=tk.BOTH, expand=True)
 
@@ -170,10 +246,15 @@ class AppController:
 
     def display_error_messagebox(self):
         tk.messagebox.showerror(title="Error", message="SQL Error!", parent=self.root)
+    
 
     def new_aware_frame(self, aware_type, **cfg_options):
         return aware_type(self, self.root, **cfg_options)
 
+
+    def display_ship_data(self, shipid):
+        self.tab_controller.select(2)
+        self.ship_view.display_ship_data(shipid)
 
     def get_ship_data(self, shipid, data_dispatcher):
         
@@ -204,13 +285,29 @@ class AppController:
 
         if name_search:
             name_search = escape_string(name_search)
-            print(repr(name_search))
             query += f" WHERE S_Name LIKE '%{name_search}%'"
 
         self.connector.query_database(query, data_dispatcher)
 
         
 
+    def add_ship(self, data):
+        query = "INSERT INTO Ship (S_Name, Flag, Length_, GT, DWT, Constructed) VALUES ({})"
+        
+        print(data[-1])
+
+        if not all(map(str.isdigit, data[2:5])):
+            self.display_error_messagebox()
+            return
+
+        escape_and_quote = lambda s : f"'{escape_string(s)}'"
+
+        sanitizers = [escape_and_quote, escape_and_quote, str, str, str, lambda date : f"DATE '{datetime.date.strftime(date, '%Y-%m-%d')}'"]
+
+        sanitized_data = [sanitizer(field_data) for sanitizer, field_data in zip(sanitizers, data)]
+
+        query = query.format(', '.join(sanitized_data))
+        self.connector.query_database(query)
 
 
 
