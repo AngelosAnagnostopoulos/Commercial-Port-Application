@@ -25,8 +25,16 @@ $ python3 main.py
 - Python application database creation and code presentation.
 - Python application GUI and database interraction.
 
-## GUI Images and examples here
-
 ## Docker
+
+You can also create a MySQL database, with a phpmyadmin frontend using docker compose.
+```sh
+$ docker compose up
+```
+
+## Client Screenshots
+
+![Client Screenshot](/screenshots/client_screenshot.png?raw=true)
+
 
 ## Known Issues
