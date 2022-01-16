@@ -40,7 +40,7 @@ CREATE TABLE Position_
   MaxSize FLOAT ,
   Taken INT ,
   PierID INT,
-  ShipID INT NULL UNIQUE,
+  ShipID INT UNIQUE,
   FOREIGN KEY (ShipID) REFERENCES Ship(ShipID),
   PRIMARY KEY (PosID)
 );

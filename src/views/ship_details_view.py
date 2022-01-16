@@ -13,7 +13,8 @@ class ShipDetailsView(ControllerAwareFrame):
             "Ship Length",
             "GT",
             "DWT",
-            "Previous Port"
+            "Previous Port",
+            "Port Position"
         )
 
     def __init__(self, controller, master, **cfg):
@@ -27,10 +28,11 @@ class ShipDetailsView(ControllerAwareFrame):
     
         self.data_display_labels = [GridLabeledField(self, field_data, row=place_row, column=0) for place_row, field_data in enumerate(ShipDetailsView.COLUMNS, start=1)]
         
-        self.refresh_button = tk.Button(self, text="Referesh", command=self.fetch_ship_data)
-        self.refresh_button.grid(row=len(ShipDetailsView.COLUMNS) + 2, column=0, columnspan=2)
+        self.action_button = tk.Button(self, text="Action", command=self.action_button_callback)
+        self.action_button.grid(row=len(ShipDetailsView.COLUMNS) + 2, column=0, columnspan=2)
 
-        self.current_ship_id = 5
+        self.current_ship_id = None
+        self.pos_id = None
 
     def display_ship_data(self, shipid):
         self.current_ship_id = shipid
@@ -44,3 +46,22 @@ class ShipDetailsView(ControllerAwareFrame):
         
         for grid_field, data_chunk in zip(self.data_display_labels, data):
             grid_field.update_data(data_chunk)
+
+        self.pos_id = data[-1]
+
+        if self.pos_id is None:
+            self.action_button.config(text="Arrive Now")
+        
+        else:
+            self.action_button.config(text="Depart Now")
+
+    def action_button_callback(self):
+        
+        if self.pos_id is not None:
+            self.controller.depart_ship(self.current_ship_id)
+        
+        else:
+            self.controller.arrive_ship(self.current_ship_id)
+
+        self.fetch_ship_data()
+

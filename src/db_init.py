@@ -55,6 +55,8 @@ def main():
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/views.sql")
         print("Creating ships index:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/indexes.sql")
+        print("Creating Triggers")
+        dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/triggers.sql", split_delimiter="||")
 
         mydb.commit()
         

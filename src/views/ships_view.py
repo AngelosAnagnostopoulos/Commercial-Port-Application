@@ -35,4 +35,7 @@ class ShipsView(ControllerAwareFrame):
     def run_update(self):
         self.ship_tree_view.clear_all_children()
         self.controller.get_all_ships(self.ship_name_entry.get(), self.only_in_port_var.get(), self.ship_tree_view.insert_to_treeview)
+    
+
+        
         

@@ -5,3 +5,4 @@ from .movements_view import *
 from .raw_sql_view import *
 from .ship_details_view import *
 from .ships_view import *
+from .positions_view import *

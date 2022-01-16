@@ -1,11 +1,11 @@
-from database_connector import DatabaseConnector, escape_string
+from asyncio import QueueEmpty
+import queue
+from database_connector import DatabaseConnector, escape_string, format_date_to_sql
 from utils import info
 
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
-from tkcalendar import DateEntry
-import datetime
 
 from views import *
 
@@ -32,6 +32,7 @@ class AppController:
         self.employees_view = self.new_aware_frame(EmployeesView)
         self.ship_view = self.new_aware_frame(ShipDetailsView)
         self.add_ship_view = self.new_aware_frame(AddShipView)
+        self.positions_view = self.new_aware_frame(PositionsView)
         self.cargo_view = self.new_aware_frame(CargoView)
         self.movements_view = self.new_aware_frame(MovementView)
         self.raw_sql_view = self.new_aware_frame(RawSQLView)
@@ -40,18 +41,20 @@ class AppController:
         self.tab_controller.add(self.employees_view, text='Employees')
         self.tab_controller.add(self.ship_view, text='Ship View')
         self.tab_controller.add(self.add_ship_view, text="Add Ship")
+        self.tab_controller.add(self.positions_view, text="Positions")
         self.tab_controller.add(self.cargo_view, text="Cargo")
         self.tab_controller.add(self.movements_view, text="Movements")
         self.tab_controller.add(self.raw_sql_view, text="Raw SQL")
 
         self.tab_controller.pack(fill=tk.BOTH, expand=True)
 
-
         self.connector = DatabaseConnector(config, default_error_handler=self.display_error_messagebox)
         self.connector.start_executor()
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         
+        self.ship_to_arrive = None
+
         self.root.mainloop()
 
 
@@ -78,11 +81,12 @@ class AppController:
                 "GT",
                 "DWT",
                 "PrevPort",
+                "PosID",
             )
 
         FIELDS = ", ".join(COLUMNS)
 
-        query = f"SELECT {FIELDS} FROM Ship WHERE ShipID = {shipid}"
+        query = f"SELECT {FIELDS} FROM Ship LEFT JOIN Position_ USING (ShipID) WHERE ShipID = {shipid} "
 
         self.connector.query_database(query, data_dispatcher)
         
@@ -103,14 +107,16 @@ class AppController:
         
         self.connector.query_database(query, data_dispatcher)
     
-    def get_arrivals(self, data_dispatcher):
-        query = "SELECT * FROM ArrivingSoon"
-
+    def get_arrivals(self, from_date, to_date, data_dispatcher):
+        query = "SELECT * FROM ArrivingSoon WHERE ArrivalDate BETWEEN {} AND {}"
+        query = query.format(format_date_to_sql(from_date), format_date_to_sql(to_date))
+        
         self.connector.query_database(query, data_dispatcher)
 
 
-    def get_departures(self, data_dispatcher):
-        query = "SELECT * FROM DepartingSoon"
+    def get_departures(self, from_date, to_date, data_dispatcher):
+        query = "SELECT * FROM DepartingSoon WHERE DepartureDate BETWEEN {} AND {}"
+        query = query.format(format_date_to_sql(from_date), format_date_to_sql(to_date))
 
         self.connector.query_database(query, data_dispatcher)
 
@@ -124,7 +130,7 @@ class AppController:
 
         escape_and_quote = lambda s : f"'{escape_string(s)}'"
 
-        sanitizers = [escape_and_quote, escape_and_quote, str, str, str, lambda date : f"DATE '{datetime.date.strftime(date, '%Y-%m-%d')}'"]
+        sanitizers = [escape_and_quote, escape_and_quote, str, str, str, format_date_to_sql]
 
         sanitized_data = [sanitizer(field_data) for sanitizer, field_data in zip(sanitizers, data)]
 
@@ -136,8 +142,49 @@ class AppController:
 
         self.connector.query_database(query, dispatcher=data_dispatcher)
 
+    def get_positions(self, only_empty, data_dispatcher):
+        query = "SELECT * FROM PositionsView"
+
+        if only_empty:
+            query += " WHERE ShipID IS NULL"
+        
+        self.connector.query_database(query, data_dispatcher)
+
+    def depart_ship(self, shipid):
+        query = f"UPDATE Position_ SET ShipID = NULL WHERE ShipID = {shipid}"
+
+        self.connector.query_database(query)
+
+
+    def arrive_ship(self, shipid):
+        self.tab_controller.select(4)
+        self.positions_view.show_empty()
+        self.ship_to_arrive = shipid
+
+        tk.messagebox.showinfo("Arrival", "Double click on position to move ship there.\nChange tab to abort.")
+               
+
+    def position_selected(self, position):
+        
+        if self.ship_to_arrive is None:
+            return
+        
+        query = f"UPDATE Position_ SET ShipID = {self.ship_to_arrive} WHERE PosID = {position}"
+        self.connector.query_database(query, on_success=self.ship_arrival_successful)
+        self.ship_to_arrive = None
+       
+    def ship_arrival_successful(self):
+        self.clear_ship_to_arrive()
+        tk.messagebox.showinfo("Succes", "Ship arrival successful")
+
+    def clear_ship_to_arrive(self, event=None):
+        self.ship_to_arrive = None
+
     def execute_raw_sql(self, query, data_dispatcher, column_dispatcher):
         self.connector.query_database(query, dispatcher=data_dispatcher, column_dispatcher=column_dispatcher)
+
+
+
 
 
     def on_close(self):

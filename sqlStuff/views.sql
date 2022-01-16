@@ -43,7 +43,7 @@ SELECT
 FROM 
     Ship,Arival
 WHERE 
-    Arival.ShipID = Ship.ShipID AND ArrivalDate BETWEEN NOW() AND (NOW() + INTERVAL 7 DAY);
+    Arival.ShipID = Ship.ShipID;
 
 CREATE VIEW DepartingSoon AS
 SELECT
@@ -54,7 +54,15 @@ SELECT
 FROM 
     Ship,Departure
 WHERE 
-    Departure.ShipID = Ship.ShipID AND DepartureDate BETWEEN NOW() AND (NOW() + INTERVAL 7 DAY);
+    Departure.ShipID = Ship.ShipID;
+
+CREATE VIEW PositionsView AS
+SELECT 
+    PosID, 
+    PierID, 
+    ShipID,
+    S_Name
+FROM Position_ LEFT JOIN Ship USING(ShipID);
 
 CREATE VIEW UnauthorisedShipView AS
 SELECT

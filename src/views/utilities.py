@@ -1,15 +1,17 @@
+from cgitb import text
 import tkinter as tk
 from tkinter import ttk
 
 class ColumnTreeView(ttk.Treeview):
 
-    def __init__(self, master, columns, updater=None, on_select=None, id_col=None, **cfg):
+    def __init__(self, master, columns, updater=None, on_select=None, id_col=None, text_on_null="", **cfg):
         super().__init__(master, columns=columns, **cfg)
 
         self.columns = columns
         self.__updater = updater
         self.__on_select = on_select
         self.__id_col = id_col
+        self.__text_on_null = text_on_null
         self.heading("#0", text="")
     
         # fix ghost col
@@ -23,7 +25,7 @@ class ColumnTreeView(ttk.Treeview):
             self.bind("<Double-1>", self.__on_click)
 
         if self.__updater:
-            self.bind("<FocusIn>", lambda e : self.update())
+            self.master.bind("<FocusIn>", lambda e : self.update())
 
     def __on_click(self, event):
         selected_item = self.selection()
@@ -46,6 +48,9 @@ class ColumnTreeView(ttk.Treeview):
         self.__updater(self.insert_to_treeview)
 
     def insert_to_treeview(self, data):
+
+        data = [entry if entry is not None else self.__text_on_null for entry in data]
+
         if self.__id_col is not None:
             self.insert(parent='', index=tk.END, iid=str(data[self.__id_col]), values=data)
         
