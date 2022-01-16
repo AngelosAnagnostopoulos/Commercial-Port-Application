@@ -34,20 +34,24 @@ def main():
             logger.critical(err)
     else:
         cursor = mydb.cursor(buffered=True)
-
+        
         try:
             cursor.execute("DROP DATABASE projectDB")
         except:
             pass
 
-        dbutils.use_database(mydb, cursor)
-        dbutils.database_init(cursor)    
-        
-        mydb.commit()
 
-        #dbutils.insertions(mydb, cursor)
+        dbutils.use_database(mydb, cursor)        
+        print("Creating tables:")
+        dbutils.execute_sql_file(mydb,cursor, "../sqlStuff/dbcreation.sql")
+        print("Inserting data:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/insertions.sql")
+        dbutils.execute_sql_file(mydb,cursor,"../sqlStuff/randomShips.sql")
+        print("Creating views:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/views.sql")
+        print("Creating ships index:")
+        dbutils.execute_sql_file(mydb,cursor, "../sqlStuff/indexes.sql")
+
         mydb.commit()
         
         test = "SHOW TABLES"

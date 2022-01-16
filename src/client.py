@@ -285,7 +285,7 @@ class AppController:
 
         if name_search:
             name_search = escape_string(name_search)
-            query += f" WHERE S_Name LIKE '%{name_search}%'"
+            query += f" WHERE S_Name LIKE '%{name_search}%';"
 
         self.connector.query_database(query, data_dispatcher)
 

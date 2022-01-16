@@ -1,27 +1,3 @@
-/*CREATE DATABASE limanidb;*/
-/*DROP DATABASE limanidb;*/
-/*
-DROP TABLE WeatherInfo;
-DROP TABLE Starts_;
-DROP TABLE Shift;
-DROP TABLE Containership;
-DROP TABLE Tanker;
-DROP TABLE Other;
-DROP TABLE Commercial;
-DROP TABLE Arival;
-DROP TABLE Departure;
-DROP TABLE Completes;
-DROP TABLE Ship;
-DROP TABLE Position_;
-DROP TABLE Pier;
-DROP TABLE Location;
-DROP TABLE Regarding;
-DROP TABLE Shipment;
-DROP TABLE Personel;
-DROP TABLE Container;
-DROP TABLE Transaction_;
-*/
-
 CREATE TABLE Location
 (
   LocID INT NOT NULL AUTO_INCREMENT,
@@ -56,14 +32,14 @@ CREATE TABLE Ship
 (
   ShipID INT NOT NULL AUTO_INCREMENT,
   PrevPort VARCHAR(255) ,
-  EstimatedArrivalTime FLOAT,
+  EstimatedArrivalTime DATE,
   Constructed DATE ,
   Flag VARCHAR(255) ,
   S_Name VARCHAR(255) ,
   Length_ FLOAT ,
   GT INT ,
   DWT INT ,
-  PosID INT,
+  PosID INT DEFAULT NULL,
   PRIMARY KEY (ShipID),
   FOREIGN KEY (PosID) REFERENCES Position_(PosID) 
 );
