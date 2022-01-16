@@ -8,14 +8,8 @@ config = {
         "user" : info.USER,
         "host" : info.HOST,
         "password" : info.PASSWORD,
-<<<<<<< HEAD
         "port" : info.PORT,    
 }
-=======
-        "port" : info.PORT,
-        "raise_on_warnings" : True
-    }
->>>>>>> 900bb6f2ef889bf9d61e35ce16b7646bad4835e1
 
 def main():
 
