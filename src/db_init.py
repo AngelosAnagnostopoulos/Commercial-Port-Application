@@ -49,7 +49,7 @@ def main():
         print("Inserting data:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/insertions.sql")
         
-        dbutils.execute_sql_file(mydb, cursor,"../sqlStuff/randomShips.sql")
+        #dbutils.execute_sql_file(mydb, cursor,"../sqlStuff/randomShips.sql")
         print("Creating views:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/views.sql")
         print("Creating ships index:")
