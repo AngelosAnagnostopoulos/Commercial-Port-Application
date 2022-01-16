@@ -10,13 +10,13 @@ from tkinter import ttk
 from views import *
 
 config = {
-        "user":info.USER,
-        "host":info.HOST,
-        "password":info.PASSWORD,
-        "port" : info.PORT,
-        "database" : "projectDB",
-        "raise_on_warnings": True
-    }
+    "user" : "app_user",
+    "password" : "chis-vu?the",
+    "host" : "localhost",
+    "port" : 3306,
+    "database" : "projectDB",
+    "raise_on_warnings": True
+}
 
 
 class AppController:
