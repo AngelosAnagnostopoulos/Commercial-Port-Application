@@ -1,7 +1,7 @@
 #! python3
 # A script to populate the projectDB database.
 
-import pprint,random,bs4,requests,re,datetime
+import pprint, random, bs4, requests, re, datetime
 
 ship_url = "https://kidadl.com/articles/boat-names-from-history-nature-and-fiction"
 ship_page = requests.get(ship_url)

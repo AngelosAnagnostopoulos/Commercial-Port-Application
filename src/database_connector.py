@@ -1,5 +1,4 @@
 import asyncio
-from sqlite3 import Cursor
 import threading
 import mysql.connector
 
@@ -53,7 +52,6 @@ class DatabaseConnector:
                     dispatcher(data)
 
         except Exception as e:
-            print(e)
             if onerror:
                 onerror()
 

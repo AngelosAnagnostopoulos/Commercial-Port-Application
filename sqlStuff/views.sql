@@ -27,7 +27,8 @@ SELECT
     S_Name,
     Flag,
     PosID
-FROM Ship;
+FROM Ship LEFT JOIN Position_ USING(ShipID);
+
 
 CREATE VIEW ShipsInPort AS
 SELECT * FROM AllShipsView
@@ -59,8 +60,7 @@ CREATE VIEW UnauthorisedShipView AS
 SELECT
     COUNT(S_Name) AS ShipsInPort
 FROM 
-    Ship
-WHERE Ship.PosID IS NOT NULL;
+    ShipsInPort;
 
 CREATE VIEW UnauthorisedPersonelView AS
 SELECT
