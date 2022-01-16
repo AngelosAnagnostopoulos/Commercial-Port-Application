@@ -35,12 +35,14 @@ class ColumnTreeView(ttk.Treeview):
 
         self.__on_select(selected_item)
 
-    def update(self):
+    def clear_all_children(self):
         # delete all items in view
-
         for item in self.get_children():
             self.delete(item)
 
+    def update(self):
+        self.clear_all_children()
+      
         self.__updater(self.insert_to_treeview)
 
     def insert_to_treeview(self, data):
