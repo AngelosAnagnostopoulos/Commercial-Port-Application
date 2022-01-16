@@ -19,14 +19,6 @@ CREATE TABLE WeatherInfo
   FOREIGN KEY (LocID) REFERENCES Location(LocID) 
 );
 
-CREATE TABLE Position_
-(
-  PosID INT NOT NULL AUTO_INCREMENT,
-  MaxSize FLOAT ,
-  Taken INT ,
-  PierID INT,
-  PRIMARY KEY (PosID)
-);
 
 CREATE TABLE Ship
 (
@@ -39,9 +31,18 @@ CREATE TABLE Ship
   Length_ FLOAT ,
   GT INT ,
   DWT INT ,
-  PosID INT DEFAULT NULL,
-  PRIMARY KEY (ShipID),
-  FOREIGN KEY (PosID) REFERENCES Position_(PosID) 
+  PRIMARY KEY (ShipID)
+);
+
+CREATE TABLE Position_
+(
+  PosID INT NOT NULL AUTO_INCREMENT,
+  MaxSize FLOAT ,
+  Taken INT ,
+  PierID INT,
+  ShipID INT UNIQUE,
+  FOREIGN KEY (ShipID) REFERENCES Ship(ShipID),
+  PRIMARY KEY (PosID)
 );
 
 CREATE TABLE Shipment 

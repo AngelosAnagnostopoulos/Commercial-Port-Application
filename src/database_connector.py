@@ -1,7 +1,7 @@
 import asyncio
-from sqlite3 import Cursor
 import threading
 import mysql.connector
+import datetime
 
 def escape_string(string):
     ESCAPED_CHARS = """%'"_\\"""
@@ -14,6 +14,8 @@ def escape_string(string):
     
     return ''.join(str_buffer)
 
+def format_date_to_sql(date):
+    return f"DATE '{datetime.date.strftime(date, '%Y-%m-%d')}'"
 
 
 class DatabaseConnector:
@@ -35,13 +37,13 @@ class DatabaseConnector:
 
         self.loop.close()
     
-    def query_database(self, query, dispatcher=None, column_dispatcher=None, onerror=None):
+    def query_database(self, query, dispatcher=None, column_dispatcher=None, onerror=None, on_success=None):
         if onerror is None:
             onerror = self.deafult_error_handler
         
-        asyncio.run_coroutine_threadsafe(self.__inner_query_database(query, dispatcher, column_dispatcher, onerror), self.loop)
+        asyncio.run_coroutine_threadsafe(self.__inner_query_database(query, dispatcher, column_dispatcher, onerror, on_success), self.loop)
 
-    async def __inner_query_database(self, query, dispatcher, column_dispatcher, onerror):
+    async def __inner_query_database(self, query, dispatcher, column_dispatcher, onerror, on_sucess):
         try:
             self.cursor.execute(query)
             
@@ -52,11 +54,12 @@ class DatabaseConnector:
                 for data in self.cursor:
                     dispatcher(data)
 
+            if on_sucess:
+                on_sucess()
+
         except Exception as e:
-            print(e)
             if onerror:
                 onerror()
-
         finally:
             self.conn.commit()
 

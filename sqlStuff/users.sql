@@ -1,0 +1,4 @@
+DROP USER IF EXISTS 'app_user'@'%';
+CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'chis-vu?the';
+GRANT SELECT, INSERT, UPDATE ON *.* TO 'app_user'@'%';
+FLUSH PRIVILEGES; 

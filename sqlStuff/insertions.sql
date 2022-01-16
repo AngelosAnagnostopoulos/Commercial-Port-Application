@@ -13,33 +13,33 @@ INSERT INTO Pier VALUES
 	('1','5','1'),
     ('2','5','1');
     
-INSERT INTO Position_ VALUES
-(1,30.0,1,1),
-(2,20.0,1,1),
-(3,10.0,0,1),
-(4,50.0,0,1),
-(5,300.0,1,1),
-(6,200.0,1,2),
-(7,100.0,0,2),
-(8,500.0,0,2),
-(9,500.0,1,2),
-(10,500.0,1,2);
-
 INSERT INTO Ship VALUES
-(1,'Delhi, India', NULL, DATE '2014-02-03','India','DurgaSS',133,10,100,NULL),
-(2,'Piraeus, Greece', NULL, DATE '2000-01-01','Greek','Noor1',50,3,30,1),
-(3,'Moscow, Russia', NULL, DATE '2014-02-03','Pakistan','ScamSS',420,30,200,2),
-(4,'Okinawa, Japan', NULL, DATE '1942-08-27','American','U.S.S. William D. Porter',115,40,100,NULL ),
-(5,'Delhi, India', NULL, DATE '2014-02-03','India','NesoSS',133,10,100,NULL ),
-(6,'Delhi, India', NULL, DATE '1965-02-06','Greek','Noor2ElectricBoogaloo',25,300,30,6),
-(7,'Moscow, Russia', NULL, DATE '2014-02-03','Armenian','UltimateSmashBros',15,30,200,9 ),
-(8,'Piraeus, Greece', NULL, DATE '1963-02-21','American','U.S.S Phill McCracken',140,40,100,NULL ),
-(9,'Piraeus, Greece', NULL, DATE '1962-04-25','American','S.S. Naomi',100,50,90,NULL ),
-(10,'Tokyo, Japan', NULL, DATE '2014-04-11','Japanesse','Nakatomi Plaza',89,40,100,10 ),
-(11,'Tokyo, Japan', NULL, DATE '2000-02-24','Armenian','The lady of the oceans',86,40,100,5 ),
-(12,'Tokyo, Japan', NULL, DATE '1963-02-21','Armenian','SuperAFM',62,40,100,NULL ),
-(13,'Piraeus, Greece', NULL, DATE '1963-02-21','American','S.S. DistroTube',12,40,100,NULL ),
-(14,'Piraeus, Greece', NULL, DATE '1963-02-21','American','S.S. Thryalidis',1521,40,100,NULL );
+(1,'Delhi, India', NULL, DATE '2014-02-03','India','DurgaSS',133,10,100),
+(2,'Piraeus, Greece', NULL, DATE '2000-01-01','Greek','Noor1',50,3,30),
+(3,'Moscow, Russia', NULL, DATE '2014-02-03','Pakistan','ScamSS',420,30,200),
+(4,'Okinawa, Japan', NULL, DATE '1942-08-27','American','U.S.S. William D. Porter',115,40,100),
+(5,'Delhi, India', NULL, DATE '2014-02-03','India','NesoSS',133,10,100),
+(6,'Delhi, India', NULL, DATE '1965-02-06','Greek','Noor2ElectricBoogaloo',25,300,30),
+(7,'Moscow, Russia', NULL, DATE '2014-02-03','Armenian','UltimateSmashBros',15,30,200),
+(8,'Piraeus, Greece', NULL, DATE '1963-02-21','American','U.S.S Phill McCracken',140,40,100),
+(9,'Piraeus, Greece', NULL, DATE '1962-04-25','American','S.S. Naomi',100,50,90),
+(10,'Tokyo, Japan', NULL, DATE '2014-04-11','Japanesse','Nakatomi Plaza',89,40,100),
+(11,'Tokyo, Japan', NULL, DATE '2000-02-24','Armenian','The lady of the oceans',86,40,100),
+(12,'Tokyo, Japan', NULL, DATE '1963-02-21','Armenian','SuperAFM',62,40,100),
+(13,'Piraeus, Greece', NULL, DATE '1963-02-21','American','S.S. DistroTube',12,40,100),
+(14,'Piraeus, Greece', NULL, DATE '1963-02-21','American','S.S. Thryalidis',1521,40,100);
+
+INSERT INTO Position_ VALUES
+(1,30.0,1,1, 2),
+(2,20.0,1,1, 3),
+(3,10.0,0,1, NULL),
+(4,50.0,0,1, NULL),
+(5,300.0,1,1, 11),
+(6,200.0,1,2, 6),
+(7,100.0,0,2, NULL),
+(8,500.0,0,2, NULL),
+(9,500.0,1,2, 7),
+(10,500.0,1,2, 10);
 
 INSERT INTO Shift VALUES
 	(1,DATE '2022-02-10', DATE '2022-02-11', 1,1),

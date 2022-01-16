@@ -1,16 +1,15 @@
 import mysql.connector,logging
 from mysql.connector import errorcode
-from utils import dbutils,info
+from utils import dbutils, info
 
 import os
 
 config = {
-        "user":info.USER,
-        "host":info.HOST,
-        "password":info.PASSWORD,
-        "port" : info.PORT,
-        "raise_on_warnings": True
-    }
+        "user" : info.USER,
+        "host" : info.HOST,
+        "password" : info.PASSWORD,
+        "port" : info.PORT,    
+}
 
 def main():
 
@@ -55,6 +54,10 @@ def main():
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/views.sql")
         print("Creating ships index:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/indexes.sql")
+        print("Creating Triggers")
+        dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/triggers.sql", split_delimiter="||")
+        print("Creating app user")
+        dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/users.sql")
 
         mydb.commit()
         

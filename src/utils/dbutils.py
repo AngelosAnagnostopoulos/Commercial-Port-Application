@@ -30,15 +30,15 @@ def use_database(database, cursor):
             exit(1)
 
 
-def execute_sql_file(conn, cursor, filepath):
+def execute_sql_file(conn, cursor, filepath, split_delimiter=";", multi_command=False):
 
     with open(filepath, 'r', encoding='utf-8') as insertions:
         # Potential for injection here, should be fine as long as an end user doesnt have access
-        sql_commands = insertions.read().split(';')
+        sql_commands = insertions.read().replace('\n', ' ').split(split_delimiter)
         
         for command in sql_commands:
             try:
-                cursor.execute(command)
+                cursor.execute(command, multi=multi_command)
                 conn.commit()
             except mysql.connector.Error as err:
                 if err.errno == 1062:
@@ -49,6 +49,8 @@ def execute_sql_file(conn, cursor, filepath):
                     print("Already exists.")
                 elif err.errno == 1005:
                     print("Constraint already satisfied.")
+                elif err.errno == 1359:
+                    print("Trigger allready exists")
                 else:
                     print(err)
                     exit(1)
