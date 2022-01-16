@@ -59,7 +59,6 @@ class DatabaseConnector:
 
         except Exception as e:
             if onerror:
-                print(e)
                 onerror()
         finally:
             self.conn.commit()

@@ -162,7 +162,6 @@ class AppController:
         self.ship_to_arrive = shipid
 
         tk.messagebox.showinfo("Arrival", "Double click on position to move ship there.\nChange tab to abort.")
-               
 
     def position_selected(self, position):
         
@@ -182,9 +181,6 @@ class AppController:
 
     def execute_raw_sql(self, query, data_dispatcher, column_dispatcher):
         self.connector.query_database(query, dispatcher=data_dispatcher, column_dispatcher=column_dispatcher)
-
-
-
 
 
     def on_close(self):
