@@ -1,4 +1,5 @@
 import asyncio
+from sqlite3 import Cursor
 import threading
 import mysql.connector
 
@@ -34,26 +35,29 @@ class DatabaseConnector:
 
         self.loop.close()
     
-    def query_database(self, query, dispatcher=None, onerror=None):
+    def query_database(self, query, dispatcher=None, column_dispatcher=None, onerror=None):
         if onerror is None:
             onerror = self.deafult_error_handler
         
-        asyncio.run_coroutine_threadsafe(self.__inner_query_database(query, dispatcher, onerror), self.loop)
+        asyncio.run_coroutine_threadsafe(self.__inner_query_database(query, dispatcher, column_dispatcher, onerror), self.loop)
 
-    async def __inner_query_database(self, query, dispatcher, onerror):
+    async def __inner_query_database(self, query, dispatcher, column_dispatcher, onerror):
         try:
             self.cursor.execute(query)
             
+            if column_dispatcher:
+                column_dispatcher(self.cursor.column_names)
+
             if dispatcher:
                 for data in self.cursor:
                     dispatcher(data)
 
-        except:
+        except Exception as e:
+            print(e)
             if onerror:
                 onerror()
 
         finally:
-            #self.cursor.commit()
             self.conn.commit()
 
     def close_connector(self):

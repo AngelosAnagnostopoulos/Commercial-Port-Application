@@ -35,7 +35,7 @@ WHERE PosID IS NOT NULL;
 
 CREATE VIEW ArrivingSoon AS
 SELECT
-    Ship.ShipID
+    Ship.ShipID,
     S_Name,
     Flag,
     ArrivalDate

@@ -2,6 +2,7 @@ import mysql.connector,logging
 from mysql.connector import errorcode
 from utils import dbutils,info
 
+import os
 
 config = {
         "user":info.USER,
@@ -40,17 +41,20 @@ def main():
         except:
             pass
 
+        
+        os.chdir(os.path.dirname(__file__))
 
         dbutils.use_database(mydb, cursor)        
         print("Creating tables:")
-        dbutils.execute_sql_file(mydb,cursor, "../sqlStuff/dbcreation.sql")
+        dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/dbcreation.sql")
         print("Inserting data:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/insertions.sql")
-        dbutils.execute_sql_file(mydb,cursor,"../sqlStuff/randomShips.sql")
+        
+        # dbutils.execute_sql_file(mydb, cursor,"../sqlStuff/randomShips.sql")
         print("Creating views:")
         dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/views.sql")
         print("Creating ships index:")
-        dbutils.execute_sql_file(mydb,cursor, "../sqlStuff/indexes.sql")
+        dbutils.execute_sql_file(mydb, cursor, "../sqlStuff/indexes.sql")
 
         mydb.commit()
         

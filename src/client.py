@@ -2,7 +2,7 @@ from database_connector import DatabaseConnector, escape_string
 from utils import info
 
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import RADIOBUTTON, messagebox
 from tkinter import ttk
 from tkcalendar import DateEntry
 import datetime
@@ -15,6 +15,56 @@ config = {
         "database" : "projectDB",
         "raise_on_warnings": True
     }
+
+
+class ColumnTreeView(ttk.Treeview):
+
+    def __init__(self, master, columns, updater, on_select=None, id_col=None, **cfg):
+        super().__init__(master, columns=columns, **cfg)
+
+        self.columns = columns
+        self.__updater = updater
+        self.__on_select = on_select
+        self.__id_col = id_col
+        self.heading("#0", text="")
+    
+        # fix ghost col
+        self.column("#0", width=1, stretch=False)
+
+        for column in self.columns:
+            self.heading(column, text=column)
+            self.column(column, width=1, anchor=tk.CENTER)
+
+        if self.__on_select:
+            self.bind("<Double-1>", self.__on_click)
+
+        self.bind("<FocusIn>", lambda e : self.update())
+
+    def __on_click(self, event):
+        selected_item = self.ship_view_table.selection()
+
+        if selected_item is None or len(selected_item) != 1:
+            return
+
+        selected_item = selected_item[0]
+
+        self.__on_select(selected_item)
+
+    def update(self):
+        # delete all items in view
+
+        for item in self.get_children():
+            self.delete(item)
+
+        self.__updater(self.insert_to_treeview)
+
+    def insert_to_treeview(self, data):
+        if self.__id_col:
+            self.insert(parent='', index=tk.END, iid=str(data[self.__id_col]), values=data)
+        
+        else:
+            self.insert(parent='', index=tk.END, values=data)
+    
 
 
 class ControllerAwareFrame(tk.Frame):
@@ -102,6 +152,9 @@ class GridLabeledField:
        self.__data.grid(row=data_row, column=data_col, sticky=tk.W, padx=10)
 
     def update_data(self, data):
+        if data is None:
+            data = ''
+        
         self.__data.config(text=data)
 
 class ShipView(ControllerAwareFrame):
@@ -200,16 +253,127 @@ class AddShipView(ControllerAwareFrame):
 
 class MovementView(ControllerAwareFrame):
 
+    ARRIVALS_COLUMNS = (
+        "ShipID",
+        "Ship Name",
+        "Flag",
+        "Arrival Date"
+    )
+
+    DEPARTURES_COLUMNS = (
+        "ShipID",
+        "Ship Name",
+        "Flag",
+        "Departure Date"
+    )
 
     def __init__(self, controller, master, **cfg):
         super().__init__(controller, master, **cfg)
 
+        tk.Label(self, text="Arrivals").pack(anchor=tk.CENTER, pady=10)
+
+        self.arrivals_treeview = ColumnTreeView(self, columns=MovementView.ARRIVALS_COLUMNS, 
+                                                      updater=self.controller.get_arrivals, 
+                                                      id_col=0)
+
+        self.arrivals_treeview.pack(fill=tk.BOTH, expand=True, anchor=tk.CENTER, padx=10, pady=10)
+
+        tk.Label(self, text="Deparures").pack(anchor=tk.CENTER, pady=10)
+
+        self.departures_treeview = ColumnTreeView(self, columns=MovementView.DEPARTURES_COLUMNS, 
+                                                        updater=self.controller.get_departures, 
+                                                        id_col=0)
+
+        self.departures_treeview.pack(fill=tk.BOTH, expand=True, anchor=tk.CENTER, padx=10, pady=10)
+
+
+class CargoView(ControllerAwareFrame):
+
+    COLUMNS = (
+        "Ship Name",
+        "Product",
+        "Amount",
+        "Transcaction Date"
+    )
+
+    def __init__(self, controller, master, **cfg):
+        super().__init__(controller, master, **cfg)
+        
+        self.cargo_treeview = ttk.Treeview(self, columns=CargoView.COLUMNS)
+
+        self.cargo_treeview.heading("#0", text="")
+    
+        # fix ghost col
+        self.cargo_treeview.column("#0", width=1, stretch=False)
+
+        for column in CargoView.COLUMNS:
+            self.cargo_treeview.heading(column, text=column)
+            self.cargo_treeview.column(column, width=1, anchor=tk.CENTER)
+
+        self.cargo_treeview.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        self.cargo_treeview.bind("<FocusIn>", lambda e : self.update())
+
+    
+    def update(self):
+        # delete elements
+        for item in self.cargo_treeview.get_children():
+            self.cargo_treeview.delete(item)
+
+        self.controller.get_cargo(self.__insert_data_to_treeview)
+
+    def __insert_data_to_treeview(self, data):
+        self.cargo_treeview.insert(parent='', index=tk.END, values=data)
 
 
 class EmployeeView(tk.Frame):
 
     def __init__(self, master):
         super().__init__(master)
+
+
+class RawSQLView(ControllerAwareFrame):
+
+    def __init__(self, controller, master, **cfg):
+        super().__init__(controller, master, **cfg)
+    
+        tk.Label(self, text="MySQL Query").pack(fill=tk.X, padx=10, pady=10, anchor=tk.W)
+
+        self.query_textbox = tk.Text(self, height=3)
+        self.query_textbox.pack(fill=tk.X, padx=10, pady=10)
+
+        self.execute_query_button = tk.Button(self, text="Execute SQL", command=self.execute)
+        self.execute_query_button.pack(fill=tk.X, anchor=tk.CENTER, padx=10, pady=10)
+
+        self.columns = None
+        self.treeview = None
+
+    
+    def create_treeview(self, columns):
+        self.columns = columns
+
+        if self.treeview:
+            self.treeview.destroy()
+
+        self.treeview = ColumnTreeView(self, self.columns, None)
+        self.treeview.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+    def treeview_dispatch(self, data):
+        if self.treeview:
+            self.treeview.insert_to_treeview(data)
+
+    def execute(self):
+        answer = tk.messagebox.askokcancel("Warning", 
+                                           "This should be used only for demonstration purposes.\nClick OK to continue.", 
+                                            icon=tk.messagebox.WARNING)
+
+        if answer:
+            query = self.query_textbox.get("1.0", tk.END).strip()
+
+            self.controller.execute_raw_sql(query, self.treeview_dispatch, self.create_treeview)
+            
+
+
 
 
 class AppController:
@@ -227,11 +391,17 @@ class AppController:
 
         self.ship_view = self.new_aware_frame(ShipView)
         self.add_ship_view = self.new_aware_frame(AddShipView)
+        self.cargo_view = self.new_aware_frame(CargoView)
+        self.movements_view = self.new_aware_frame(MovementView)
+        self.raw_sql_view = self.new_aware_frame(RawSQLView)
 
         self.tab_controller.add(self.ships_in_frame, text='Ships')
         self.tab_controller.add(self.employees, text='Employees')
         self.tab_controller.add(self.ship_view, text='Ship View')
         self.tab_controller.add(self.add_ship_view, text="Add Ship")
+        self.tab_controller.add(self.cargo_view, text="Cargo")
+        self.tab_controller.add(self.movements_view, text="Movements")
+        self.tab_controller.add(self.raw_sql_view, text="Raw SQL")
 
         self.tab_controller.pack(fill=tk.BOTH, expand=True)
 
@@ -289,7 +459,22 @@ class AppController:
 
         self.connector.query_database(query, data_dispatcher)
 
+    def get_cargo(self, data_dispatcher):
+        query = "SELECT * FROM CargoInfo"
         
+        self.connector.query_database(query, data_dispatcher)
+    
+    def get_arrivals(self, data_dispatcher):
+        query = "SELECT * FROM ArrivingSoon"
+
+        self.connector.query_database(query, data_dispatcher)
+
+
+    def get_departures(self, data_dispatcher):
+        query = "SELECT * FROM DepartingSoon"
+
+        self.connector.query_database(query, data_dispatcher)
+
 
     def add_ship(self, data):
         query = "INSERT INTO Ship (S_Name, Flag, Length_, GT, DWT, Constructed) VALUES ({})"
@@ -309,6 +494,9 @@ class AppController:
         query = query.format(', '.join(sanitized_data))
         self.connector.query_database(query)
 
+
+    def execute_raw_sql(self, query, data_dispatcher, column_dispatcher):
+        self.connector.query_database(query, dispatcher=data_dispatcher, column_dispatcher=column_dispatcher)
 
 
     def on_close(self):
