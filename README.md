@@ -32,9 +32,15 @@ You can also create a MySQL database, with a phpmyadmin frontend using docker co
 $ docker compose up
 ```
 
-## Client Screenshots
+Some future work with a container which will have the database running and the application will connect to it instead is on the works!
+
+## Client
 
 ![Client Screenshot](/screenshots/client_screenshot.png?raw=true)
 
 
 ## Known Issues
+
+- When changing thins on ships via the GUI, a new search is required in order for them to take place.
+- When making a query with the large dataset while using the GUI, everything breaks down...
+- When running main.py without having the mysql daemon running, the GUI window refuses to shut down.
