@@ -1,5 +1,3 @@
-from asyncio import QueueEmpty
-import queue
 from database_connector import DatabaseConnector, escape_string, format_date_to_sql
 from utils import info
 
