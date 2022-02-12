@@ -41,6 +41,7 @@ Some future work with a container which will have the database running and the a
 
 ## Known Issues
 
+- When running main.py, one must be inside the directory it is located otherwise relative imports break.
 - When changing thins on ships via the GUI, a new search is required in order for them to take place.
 - When making a query with the large dataset while using the GUI, everything breaks down...
 - When running main.py without having the mysql daemon running, the GUI window refuses to shut down.
